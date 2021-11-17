@@ -3,6 +3,9 @@ const generateBtn = document.querySelector(".generate");
 const sliders = document.querySelectorAll("input[type='range']");
 const currentHexes = document.querySelectorAll(".color h2");
 const popup = document.querySelector(".copy-container");
+const adjustBtns = document.querySelectorAll(".adjust");
+const closeAdjustBtns = document.querySelectorAll(".close-adjustment");
+const sliderContainers = document.querySelectorAll(".sliders");
 
 let initialColors;
 
@@ -28,6 +31,18 @@ popup.addEventListener("transitionend", () => {
   popupBox.classList.remove("active");
 });
 
+adjustBtns.forEach((btn, index) => {
+  btn.addEventListener("click", () => {
+    toggleAdjustmentPanel(index);
+  });
+});
+
+closeAdjustBtns.forEach((btn, index) => {
+  btn.addEventListener("click", () => {
+    toggleAdjustmentPanel(index);
+  });
+});
+
 function generateHex() {
   const hexColor = chroma.random();
   return hexColor;
@@ -39,6 +54,7 @@ function randomColors() {
   colorDivs.forEach((div, index) => {
     const hexText = div.children[0];
     const randomColor = generateHex();
+    console.log;
 
     initialColors.push(chroma(randomColor).hex());
 
@@ -46,6 +62,11 @@ function randomColors() {
     hexText.innerText = randomColor;
 
     checkTextContrast(randomColor, hexText);
+
+    const icons = div.querySelectorAll(".controls button");
+    for (icon of icons) {
+      checkTextContrast(randomColor, icon);
+    }
 
     const color = chroma(randomColor);
     const sliders = div.querySelectorAll(".sliders input");
@@ -151,6 +172,10 @@ async function copyToClipboard(hex) {
       console.log("error");
     }
   );
+}
+
+function toggleAdjustmentPanel(index) {
+  sliderContainers[index].classList.toggle("active");
 }
 
 randomColors();
