@@ -2,6 +2,8 @@ const colorDivs = document.querySelectorAll(".color");
 const generateBtn = document.querySelector(".generate");
 const sliders = document.querySelectorAll("input[type='range']");
 const currentHexes = document.querySelectorAll(".color h2");
+const popup = document.querySelector(".copy-container");
+
 let initialColors;
 
 sliders.forEach(slider => {
@@ -12,6 +14,18 @@ colorDivs.forEach((div, index) => {
   div.addEventListener("change", () => {
     updateTextUI(index);
   });
+});
+
+currentHexes.forEach(hex => {
+  hex.addEventListener("click", () => {
+    copyToClipboard(hex);
+  });
+});
+
+popup.addEventListener("transitionend", () => {
+  const popupBox = popup.children[0];
+  popup.classList.remove("active");
+  popupBox.classList.remove("active");
 });
 
 function generateHex() {
@@ -117,7 +131,6 @@ function resetInputs() {
     } else if (slider.name === "saturation") {
       const satColor = initialColors[slider.getAttribute("data-sat")];
       const satValue = chroma(satColor).hsl()[1];
-      console.log(satValue);
       slider.value = Math.floor(satValue * 100) / 100;
     } else if (slider.name === "brightness") {
       const brightColor = initialColors[slider.getAttribute("data-bright")];
@@ -125,6 +138,19 @@ function resetInputs() {
       slider.value = Math.floor(brightValue * 100) / 100;
     }
   });
+}
+
+async function copyToClipboard(hex) {
+  navigator.clipboard.writeText(hex.innerText).then(
+    () => {
+      const popupBox = popup.children[0];
+      popup.classList.add("active");
+      popupBox.classList.add("active");
+    },
+    () => {
+      console.log("error");
+    }
+  );
 }
 
 randomColors();
